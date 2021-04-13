@@ -68,6 +68,7 @@ public:
 	}
 	friend std::ostream& operator << (std::ostream& out, const person& a);
 	friend std::istream& operator >> (std::istream&, person&); 
+	friend std::istream& operator >> (std::istream&, std::vector<person>&);
 };
 
 inline std::vector<person> Person;

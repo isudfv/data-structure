@@ -185,3 +185,10 @@ std::istream& operator >> (std::istream& in, person& a) {
        >> a.fourteen_day;
     return in;
 }
+
+std::istream& operator >> (std::istream& in, std::vector<person> &a) {
+    person temp;
+    in >> temp;
+    a.push_back(std::move(temp));
+    return in;
+}

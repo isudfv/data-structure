@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <sstream>
 #include <set>
 #include <random>
 // #include <fmt/core.h>
