@@ -88,7 +88,7 @@ size_t place::GetHazard() {
         return 3;
     }
     else{
-        int sum = 0;
+        size_t sum = 0;
         for (auto &p: AllPlace){
             double r = sqrt((p.x-x))+sqrt((p.y-y));
             if(r <= 40000){

@@ -61,8 +61,8 @@ trace trace::RandomPath(size_t dormitory, std::string school_name) {
     school school = schools[SchoolName[school_name]];
     // fmt::print("Dormitory: {}   School: {}\n", dormitory, school_name);
     std::uniform_int_distribution<size_t>
-        leaving_dormitory((int)7.5*60,8*60),
-        breakfest_hours(8*60,(int)8.5*60),
+        leaving_dormitory((size_t)7.5*60,8*60),
+        breakfest_hours(8*60,(size_t)8.5*60),
         morning_class(9*60,12*60),
         lunch_hours(12*60,13*60),
         afternoon_class(14*60,17*60),

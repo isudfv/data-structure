@@ -26,9 +26,9 @@ struct school
 
 // enum SchoolName{scut, sysu, gut, gufs, gmu, gucm, xcm, scnu, gpu}; 
 inline school schools[10];
-inline std::map<std::string,int> SchoolName{{"SCUT",0}, {"SYSU",1}, {"GUT",2}, {"GUFS",3}, {"GMU",4}, {"GUCM",5}, {"XCM",6}, {"GPU",7}, {"SCNU",8}, {"GAFA",9}};
+inline std::map<std::string,size_t> SchoolName{{"SCUT",0}, {"SYSU",1}, {"GUT",2}, {"GUFS",3}, {"GMU",4}, {"GUCM",5}, {"XCM",6}, {"GPU",7}, {"SCNU",8}, {"GAFA",9}};
 
 inline std::string RandomSchool(){
-    int get = std::uniform_int_distribution<int>(0,9)(e);
+    size_t get = uid(0,9)(e);
     return find_if(begin(SchoolName), end(SchoolName), [&get](auto &p){return p.second == get;}) -> first;
 }
