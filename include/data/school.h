@@ -4,31 +4,41 @@
 
 struct school
 {
-    std::vector<size_t> dormitory;     //0
-    std::vector<size_t> teaching_area; //1
-    std::vector<size_t> canteen;       //2
-    std::vector<size_t> recreation;    //3
-    std::map<size_t,std::vector<size_t>*> v{{0,&dormitory}, {1,&teaching_area}, {2,&canteen}, {3,&recreation}};
+    std::vector<place*> dormitory;     //0 宿舍
+    std::vector<place*> teaching_area; //1 教学
+    std::vector<place*> canteen;       //2 餐饮
+    std::vector<place*> recreation;    //3 娱乐
+    std::map<size_t,std::vector<place*>*> v{{0,&dormitory}, {1,&teaching_area}, {2,&canteen}, {3,&recreation}};
 
-    size_t RandomDormitory(){
-        return uid(0,dormitory.size())(e);
+    place* RandomDormitory(){
+        return dormitory[uid(0,dormitory.size()-1)(e)];
     }
-    size_t RandomClassroom(){
-        return uid(0,teaching_area.size())(e);
+    place* RandomClassroom(){
+        return teaching_area[uid(0,teaching_area.size()-1)(e)];
     }
-    size_t RandomCanteen(){
-        return uid(0,canteen.size())(e);
+    place* RandomCanteen(){
+        return canteen[uid(0,canteen.size()-1)(e)];
     }
-    size_t RandomRecreation(){
-        return uid(0,recreation.size())(e);
+    place* RandomRecreation(){
+        return recreation[uid(0,recreation.size()-1)(e)];
     }
 };
 
 // enum SchoolName{scut, sysu, gut, gufs, gmu, gucm, xcm, scnu, gpu}; 
 inline school schools[10];
-inline std::map<std::string,size_t> SchoolName{{"SCUT",0}, {"SYSU",1}, {"GUT",2}, {"GUFS",3}, {"GMU",4}, {"GUCM",5}, {"XCM",6}, {"GPU",7}, {"SCNU",8}, {"GAFA",9}};
+inline std::map<std::string,size_t> SchoolName{
+    {"SCUT",0},         //华南理工大学
+    {"SYSU",1},         //中山大学
+    {"GUT",2},          //广东工业大学
+    {"GUFS",3},         //广东外语外贸大学
+    {"GMU",4},          //广州大学
+    {"GUCM",5},         //广州中医药大学
+    {"XCM",6},          //星海音乐学院
+    {"GPU",7},          //广州药科大学
+    {"SCNU",8},         //华南师范大学
+    {"GAFA",9}};        //广州美术学院
 
 inline std::string RandomSchool(){
     size_t get = uid(0,9)(e);
     return find_if(begin(SchoolName), end(SchoolName), [&get](auto &p){return p.second == get;}) -> first;
-}
+}       //

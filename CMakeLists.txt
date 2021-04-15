@@ -4,37 +4,39 @@
 cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 17)
-project (data_structrue VERSION 1.0)
+project (Data VERSION 1.0)
 
 file(GLOB SOURCES
     src/*.cpp
 )
 
-add_library(data STATIC ${SOURCES})
+# find_package(FMT REQUIRED)
+
+# add_library(data STATIC ${SOURCES})
+
+# target_include_directories(data
+#     PUBLIC 
+#         ${PROJECT_SOURCE_DIR}/include/data
+# )
+
+# install(TARGETS data
+#     LIBRARY DESTINATION lib)
+
+# install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ 
+#     DESTINATION include)
+
+# target_link_libraries(data )
+
 add_executable(data_bin ${SOURCES})
-
-
-target_include_directories(data
-    PUBLIC 
-        ${PROJECT_SOURCE_DIR}/include/data
-)
 
 target_include_directories(data_bin
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include/data
 )
 
-target_link_libraries(data_bin data)
+# target_link_libraries(data_bin data)
 
 
-# find_package(FMT REQUIRED)
-target_link_libraries(data )
-
-install(TARGETS data
-    LIBRARY DESTINATION lib)
-
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ 
-    DESTINATION include)
 
 # install(TARGETS data
 #     EXPORT MyMathTargets

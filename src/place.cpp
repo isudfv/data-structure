@@ -7,10 +7,23 @@
     CoordinatePlace[{x,y}] = *this; 
 } */
 
+bool place::AddToMap() {
+    try
+    {
+        CoordinatePlace[{x,y}] = this;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 0;
+    }
+    return 1;
+}
+
 bool place::InsertHealthy(size_t temp){
     try
     {
-        visit.insert(temp);
+        healthy.insert(temp);
     }
     catch(const std::exception& e)
     {
@@ -36,7 +49,7 @@ bool place::InsertPatient(size_t temp){
 bool place::DeleteHealthy(size_t temp) {
     try
     {
-        visit.erase(temp);
+        healthy.erase(temp);
     }
     catch(const std::exception& e)
     {
@@ -71,8 +84,8 @@ size_t place::GetProperty(){
     return property;
 }
 
-std::set<size_t> place::GetVisitPerson() {
-    return visit;
+std::set<size_t> place::GetHealthyPerson() {
+    return healthy;
 }
 
 std::set<size_t> place::GetDiagnosePerson() {
@@ -100,31 +113,45 @@ size_t place::GetHazard() {
     }
 }
 
-size_t place::FindPlaceByCoordinate(std::pair<size_t ,size_t > s){
-	return find(begin(AllPlace), end(AllPlace), *place::CoordinatePlace[s]) - begin(AllPlace);
+place* place::FindPlaceByCoordinate(std::pair<size_t ,size_t > s){
+	return place::CoordinatePlace[s] ;
 }
 
-size_t place::FindPlaceByCoordinate(size_t  x, size_t  y) {
+place* place::FindPlaceByCoordinate(size_t  x, size_t  y) {
     return FindPlaceByCoordinate({x,y});
 } 
 
+place* place::FindPlaceByCoordinate(place &a) {
+    return FindPlaceByCoordinate(a.GetCoodinate());
+}
+
+std::vector<place*> place::FindPlaceByName(std::string name) {
+    std::vector<place*> temp;
+    for_each(begin(AllPlace), end(AllPlace), [&](auto &p){
+        if(p.PlaceName.find(name) != std::string::npos)
+            temp.push_back(&p);
+    });
+    return temp;
+}
+
 std::istream& operator >> (std::istream& in, place& a) {
-    in >> a.SchoolName >> a.PlaceName >> a.property >> a.x >> a.y;
+    in >> a.PlaceName >> a.x >> a.y;
     return in;
 }
 
-std::istream& operator >> (std::istream& in, std::vector<place>& a) {
+std::istream& operator >> (std::istream& in, std::list<place>& a) {
     place temp;
-    in >> temp;
+    in >> temp.SchoolName >> temp >> temp.property;
     a.push_back(std::move(temp));
+    a.back().AddToMap();
     // fmt::print("{}  {}  {}\n", a.back().SchoolName, a.back().property, a.size() ) ;
-    schools[SchoolName[a.back().SchoolName]].v[a.back().property]->push_back(a.size());
+    schools[SchoolName[a.back().SchoolName]].v[a.back().property]->push_back(&a.back());
     // fmt::print("{}  {}\n", schools[3].v[a.back().property]->size(), SchoolName[a.back().SchoolName]);
     return in;
 }
 
 std::ostream& operator << (std::ostream& out, place& a) {
     // out << fmt::format("{:<50s}{:<10d}{:<10d}", a.PlaceName, a.x, a.y);
-    out << std::left << std::setw(50) << a.PlaceName << std::setw(10) << a.x << a.y ;
+    out << a.PlaceName << " " << a.x << " " << a.y ;
     return out;
 }

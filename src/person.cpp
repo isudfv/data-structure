@@ -46,11 +46,11 @@ bool person::SetSchool(string temp){
     return school_name == temp; 
 }
 
-place& person::GetDormitory(){
-    return AllPlace[dormitory]; 
+place* person::GetDormitory(){
+    return dormitory; 
 }
 
-bool person::SetDormitory(size_t temp){
+bool person::SetDormitory(place* temp){
     dormitory = temp; 
     return dormitory == temp; 
 }
@@ -59,7 +59,10 @@ bool person::SetRandomSchool() {
     try
     {
         school_name = RandomSchool();
+        cout << school_name <<endl;
+        cout << SchoolName[school_name] << endl;
         dormitory = schools[SchoolName[school_name]].RandomDormitory();
+        cout << dormitory << endl;
     }
     catch(const std::exception& e)
     {
@@ -79,7 +82,7 @@ trace person::GetTrace(size_t date) {
 trace person::GetWholeTrace() {
     trace temp;
     for(auto &p: fourteen_day) {
-        temp.AddPoint(p.GetTrace());
+        temp.AddPoint(p.GetPath());
     }
     return std::move(temp);
 }
@@ -104,10 +107,10 @@ bool person::SetRandomTrace() {
 //     return fourteen_day == temp; 
 // }
 
-bool person::InsertIntoPlace(size_t temp) {
+bool person::InsertIntoPlace(place* temp) {
     try
     {
-        AllPlace[temp].InsertHealthy(unique_id);
+        temp->InsertHealthy(unique_id);
     }
     catch(const std::exception& e)
     {
@@ -117,10 +120,10 @@ bool person::InsertIntoPlace(size_t temp) {
     return 1;
 }
 
-bool person::DeleteFromPlace(size_t temp) {
+bool person::DeleteFromPlace(place* temp) {
     try
     {
-        AllPlace[temp].DeleteHealthy(unique_id);
+        temp->DeleteHealthy(unique_id);
     }
     catch(const std::exception& e)
     {
@@ -145,7 +148,7 @@ bool person::Append(std::vector<point> temp, size_t date){
 }
 
 bool person::Delete(std::vector<point> temp, size_t date) {
-    static auto all = GetWholeTrace().GetTrace();
+    static auto all = GetWholeTrace().GetPath();
     try
     {
         fourteen_day[date].DelPoint(temp);
@@ -162,8 +165,24 @@ bool person::Delete(std::vector<point> temp, size_t date) {
     return 1;
 }
 
-person person::GetFromId(size_t temp){
+person* person::GetFromId(size_t temp){
     return person::IdPerson[temp];
+}
+
+std::vector<person*> person::GetFromId(const std::vector<size_t>& a) {
+    std::vector<person*> temp;
+    for_each(begin(a), end(a), [&temp](auto &p){
+        std::back_inserter(temp) = GetFromId(p);
+    });
+    return temp;
+}
+
+std::vector<person*> person::GetFromName(const std::string &a) {
+    std::vector<person*> temp;
+    for(auto &p: Person)
+        if(p.GetName().find(a) != std::string::npos)
+            temp.push_back(&p);
+    return temp;
 }
 
 /* bool person::OutputToFile(fs::path filename) {
@@ -175,18 +194,19 @@ person person::GetFromId(size_t temp){
 std::ostream& operator << (std::ostream& out, const person& a) {
 	// out << fmt::format("{:<10s}{:<10d}{:<10}{:<10d}{:<10s}{:<10d}\n", 
 	// 	a.name, a.age, a.sex, a.unique_id, a.school_name, a.dormitory);
-    out << std::left << std::setw(10) << a.name << std::setw(10) << a.age << std::setw(10) << a.sex << std::setw(10) << a.unique_id << std::setw(10) << a.school_name << std::setw(10) << a.dormitory;
-	out << a.fourteen_day << endl;
+    out << a.name << " " << a.age << " " << a.sex << " " << a.school_name << " " << *a.dormitory << endl;
+	out << a.fourteen_day ;
 	return out; 
 } 
 
 std::istream& operator >> (std::istream& in, person& a) {
-    in >> a.name >> a.age >> a.sex >> a.unique_id >> a.school_name >> a.dormitory
-       >> a.fourteen_day;
+    place temp;
+    in >> a.name >> a.age >> a.sex >> a.school_name >> temp >> a.fourteen_day;
+    a.dormitory = place::FindPlaceByCoordinate(temp);
     return in;
 }
 
-std::istream& operator >> (std::istream& in, std::vector<person> &a) {
+std::istream& operator >> (std::istream& in, std::list<person> &a) {
     person temp;
     in >> temp;
     a.push_back(std::move(temp));

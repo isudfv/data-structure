@@ -1,9 +1,9 @@
 #include "infected.h"
 
-bool infected::InsertIntoPlace(size_t temp) {
+bool infected::InsertIntoPlace(place* temp) {
     try
     {
-        AllPlace[temp].InsertPatient(unique_id);
+        temp->InsertPatient(unique_id);
     }
     catch(const std::exception& e)
     {
@@ -13,10 +13,10 @@ bool infected::InsertIntoPlace(size_t temp) {
     return 1;
 }
 
-bool infected::DeleteFromPlace(size_t temp) {
+bool infected::DeleteFromPlace(place* temp) {
     try
     {
-        AllPlace[temp].DeletePatient(unique_id);
+        temp->DeletePatient(unique_id);
     }
     catch(const std::exception& e)
     {
@@ -30,11 +30,11 @@ bool infected::GetNoSymptom(){
     return NoSymptom;
 }
 
-bool PersonToInfected(const person& s) {
+bool HealthyToInfected(const person& s) {
     try
     {
         auto it = find( begin(Person), end(Person), s );
-        for( auto &p: it->GetWholeTrace().GetTrace() ){
+        for( auto &p: it->GetWholeTrace().GetPath() ){
             it -> DeleteFromPlace(p.GetPlace());
         }
 
@@ -42,7 +42,7 @@ bool PersonToInfected(const person& s) {
         Person.erase(it);
         auto it2 = end(Infected); 
 
-        for( auto &p: it2->GetWholeTrace().GetTrace() ){
+        for( auto &p: it2->GetWholeTrace().GetPath() ){
             it2 -> InsertIntoPlace(p.GetPlace());
         }
     }
@@ -54,12 +54,12 @@ bool PersonToInfected(const person& s) {
     return 1; 
 }
 
-bool PersonToInfected(const std::string& s) {
+bool HealthyToInfected(const std::string& s) {
     if( count(begin(Person), end(Person), s) > 1 ){
         std::cerr << "Find mutiple matches\n";
         return 0;
     }
         
-    return PersonToInfected(*find(begin(Person), end(Person), s));
+    return HealthyToInfected(*find(begin(Person), end(Person), s));
 }
 

@@ -1,16 +1,27 @@
 #include "point.h"
 
-bool point::SetPlace(size_t temp){
+bool point::SetPlace(place *temp){
     arrival = temp;
     return arrival == temp;
 }
 
-bool point::SetTime(size_t temp){
-    arrive = temp;
-    return arrive == temp;
+bool point::SetTime(std::pair<size_t,size_t> temp){
+    arrive = temp.first;
+    leave = temp.second;
+    return temp == std::make_pair(arrive,leave) ;
 }
 
-size_t point::GetPlace(){
+bool point::SetArriveTime(size_t a) {
+    arrive = a;
+    return arrive==a;
+}
+
+bool point::SetLeaveTime(size_t a) {
+    leave = a;
+    return leave==a;
+}
+
+place* point::GetPlace(){
     return arrival;
 }
 
@@ -31,17 +42,19 @@ bool operator==(const point& a, const point& b) {
 }
 
 bool operator == (const point& a, const place& b) {
-    return AllPlace[a.arrival] == b;
+    return a.arrival == b;
 }
 
 std::ostream& operator << (std::ostream &out, const point& a) {
 	// out << fmt::format("{:<10d}{:<10d}{:<10d}", a.arrival, a.arrive, a.leave);
-    out << std::left << std::setw(10) << a.arrival << std::setw(10) <<  a.arrive << std::setw(10  ) <<  a.leave ;
+    out << *a.arrival << " " << a.arrive << " " <<  a.leave ;
 	return out;
 }
 
-std::istream& operator >> (std::istream &in, const point& a) {
-    in >> a.arrival >> a.arrive >> a.leave;
+std::istream& operator >> (std::istream &in, point& a) {
+    place temp;
+    in >> temp >> a.arrive >> a.leave;
+    a.arrival = place::FindPlaceByCoordinate(temp);
     return in;
 }
 
